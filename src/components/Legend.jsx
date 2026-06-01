@@ -3,7 +3,9 @@ import { translations } from "../utils/translations";
 
 function Legend({ corridors, visibility, onToggle, stats, lang = 'id' }) {
     const t = translations[lang];
-    const [collapsed, setCollapsed] = useState(false);
+    const [collapsed, setCollapsed] = useState(() => {
+        return window.innerWidth <= 768;
+    });
 
     return (
         <div className={`legend-panel ${collapsed ? "collapsed" : ""}`}>

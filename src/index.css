@@ -1129,12 +1129,25 @@ body,
     padding: 0 12px;
   }
 
-  .header-content h1 {
-    font-size: 14px;
+  .header-content {
+    padding-right: 0 !important;
   }
 
-  .header-subtitle {
-    display: none;
+  .header-title-group {
+    display: none !important;
+  }
+
+  .saved-btn-text {
+    display: none !important;
+  }
+
+  .header-saved-btn {
+    width: 36px !important;
+    height: 36px !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    gap: 0 !important;
   }
 
   .header-badge,
@@ -1167,6 +1180,12 @@ body,
     width: auto;
     max-height: 50vh;
     overflow-y: auto;
+    gap: 12px;
+  }
+
+  .route-search-panel.collapsed {
+    gap: 0 !important;
+    padding: 10px 14px !important;
   }
 }
 

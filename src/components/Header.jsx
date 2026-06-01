@@ -52,7 +52,7 @@ function Header({ stats, onBack, lang = 'id', setLang, onLocate, savedCount = 0,
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z" />
                         </svg>
-                        <span style={{ fontSize: '13px', fontWeight: '700' }}>{lang === 'id' ? 'Disimpan' : 'Saved'}</span>
+                        <span className="saved-btn-text" style={{ fontSize: '13px', fontWeight: '700' }}>{lang === 'id' ? 'Disimpan' : 'Saved'}</span>
                         {savedCount > 0 && (
                             <span style={{
                                 position: 'absolute',
