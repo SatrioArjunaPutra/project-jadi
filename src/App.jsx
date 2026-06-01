@@ -451,16 +451,15 @@ function App() {
         />
       )}
 
-      {/* Floating Clean View Toggle */}
-      <button 
-        className="clean-view-toggle"
-        onClick={() => setIsCleanView(!isCleanView)}
-        title={isCleanView ? (lang === 'id' ? "Tampilkan Fitur" : "Show Features") : (lang === 'id' ? "Mode Bersih" : "Clean View")}
-      >
-        {isCleanView ? "👁️" : "✨"}
-      </button>
-
       <div className="map-wrapper">
+        {/* Floating Clean View Toggle */}
+        <button 
+          className="clean-view-toggle"
+          onClick={() => setIsCleanView(!isCleanView)}
+          title={isCleanView ? (lang === 'id' ? "Tampilkan Fitur" : "Show Features") : (lang === 'id' ? "Mode Bersih" : "Clean View")}
+        >
+          {isCleanView ? "👁️" : "✨"}
+        </button>
         <MapContainer 
           ref={mapRef} 
           center={MAP_CENTER} 

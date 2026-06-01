@@ -1211,8 +1211,32 @@ body,
   }
 
   .route-search-panel.collapsed {
+    top: auto !important;
+    bottom: 80px !important;
+    height: auto !important;
+    max-height: none !important;
     gap: 0 !important;
     padding: 10px 14px !important;
+  }
+
+  .legend-panel.collapsed {
+    top: auto !important;
+    bottom: 16px !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  .clean-view-toggle {
+    top: 70px !important;
+    right: 10px !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    font-size: 16px !important;
+  }
+
+  .gm-popup-content {
+    width: 280px !important;
   }
 
   .leaflet-bottom.leaflet-left {
@@ -1255,6 +1279,11 @@ body,
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
+}
+
+.route-search-panel.collapsed {
+  gap: 0;
+  padding: 10px 14px;
 }
 
 .rs-header {
