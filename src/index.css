@@ -700,6 +700,33 @@ body,
   color: var(--accent-glow) !important;
 }
 
+/* Floating Locate Button (Google Maps style) */
+.floating-locate-btn {
+  position: absolute;
+  bottom: 80px;
+  left: 20px;
+  z-index: 998;
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  color: #4285F4;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.floating-locate-btn:hover {
+  background-color: #f8fafc;
+  transform: scale(1.05);
+  color: #1a73e8;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
 /* ===== SEARCH BAR ===== */
 .search-container {
   position: absolute;
@@ -1186,6 +1213,18 @@ body,
   .route-search-panel.collapsed {
     gap: 0 !important;
     padding: 10px 14px !important;
+  }
+
+  .leaflet-bottom.leaflet-left {
+    bottom: 140px !important;
+    left: 10px !important;
+  }
+
+  .floating-locate-btn {
+    bottom: 200px !important;
+    left: 10px !important;
+    width: 36px !important;
+    height: 36px !important;
   }
 }
 
