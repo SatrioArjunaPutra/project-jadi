@@ -3,6 +3,7 @@ import Lenis from 'lenis';
 import './TourismPage.css';
 import { translations } from '../utils/translations';
 import { tourismData } from '../data/tourismData';
+import { supabase } from '../utils/supabaseClient';
 
 const TourismPage = ({ onBack, lang, onRouteSelect }) => {
   const t = translations[lang] || translations['id'];
@@ -12,6 +13,21 @@ const TourismPage = ({ onBack, lang, onRouteSelect }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [placeAnimDir, setPlaceAnimDir] = useState('up'); 
   const [imgAnimDir, setImgAnimDir] = useState('next'); 
+  const [tourismList, setTourismList] = useState(tourismData);
+
+  useEffect(() => {
+    const fetchTourism = async () => {
+      try {
+        const { data, error } = await supabase.from('tourism_spots').select('*');
+        if (!error && data && data.length > 0) {
+          setTourismList(data.map(item => ({...item, halteTerdekat: item.halte_terdekat})));
+        }
+      } catch (err) {
+        console.error("Supabase fetch error", err);
+      }
+    };
+    fetchTourism();
+  }, []);
 
   // Setup Lenis Scroll
   useEffect(() => {
@@ -56,9 +72,9 @@ const TourismPage = ({ onBack, lang, onRouteSelect }) => {
     e.stopPropagation(); 
     setPlaceAnimDir('next');
     setImgAnimDir('next');
-    const currentIndex = tourismData.findIndex(k => k.id === selectedItem.id);
-    const nextIndex = currentIndex === tourismData.length - 1 ? 0 : currentIndex + 1;
-    const nextData = tourismData[nextIndex];
+    const currentIndex = tourismList.findIndex(k => k.id === selectedItem.id);
+    const nextIndex = currentIndex === tourismList.length - 1 ? 0 : currentIndex + 1;
+    const nextData = tourismList[nextIndex];
     const images = nextData.gambar ? (Array.isArray(nextData.gambar) ? nextData.gambar : [nextData.gambar]) : ["https://via.placeholder.com/600x400?text=No+Image"];
     setSelectedItem({ ...nextData, gambarList: images });
     setCurrentImageIndex(0); 
@@ -68,9 +84,9 @@ const TourismPage = ({ onBack, lang, onRouteSelect }) => {
     e.stopPropagation();
     setPlaceAnimDir('prev');
     setImgAnimDir('prev');
-    const currentIndex = tourismData.findIndex(k => k.id === selectedItem.id);
-    const prevIndex = currentIndex === 0 ? tourismData.length - 1 : currentIndex - 1;
-    const prevData = tourismData[prevIndex];
+    const currentIndex = tourismList.findIndex(k => k.id === selectedItem.id);
+    const prevIndex = currentIndex === 0 ? tourismList.length - 1 : currentIndex - 1;
+    const prevData = tourismList[prevIndex];
     const images = prevData.gambar ? (Array.isArray(prevData.gambar) ? prevData.gambar : [prevData.gambar]) : ["https://via.placeholder.com/600x400?text=No+Image"];
     setSelectedItem({ ...prevData, gambarList: images });
     setCurrentImageIndex(0);
@@ -114,7 +130,7 @@ const TourismPage = ({ onBack, lang, onRouteSelect }) => {
         </div>
 
         <div className="tourism-grid">
-          {tourismData.map((item) => {
+          {tourismList.map((item) => {
             const images = item.gambar ? (Array.isArray(item.gambar) ? item.gambar : [item.gambar]) : ["https://via.placeholder.com/600x400?text=No+Image"];
 
             return (

@@ -13,7 +13,7 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import {
-  corridors,
+  corridors as initialCorridors,
   stats,
   MAP_CENTER,
   MAP_ZOOM,
@@ -33,6 +33,7 @@ import { translations } from "./utils/translations";
 import SavedStopsModal from "./components/SavedStopsModal";
 import { kulinerData } from "./data/kulinerData";
 import { tourismData } from "./data/tourismData";
+import { supabase } from "./utils/supabaseClient";
 
 // Fix default marker icon paths
 delete L.Icon.Default.prototype._getIconUrl;
@@ -161,6 +162,51 @@ function App() {
   });
   const [showSavedModal, setShowSavedModal] = useState(false);
 
+  // Supabase Data States
+  const [tourismList, setTourismList] = useState(tourismData);
+  const [kulinerList, setKulinerList] = useState(kulinerData);
+
+  const [corridorsList, setCorridorsList] = useState(initialCorridors);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { data: tData, error: tErr } = await supabase.from('tourism_spots').select('*');
+        if (!tErr && tData && tData.length > 0) {
+          setTourismList(tData.map(item => ({...item, halteTerdekat: item.halte_terdekat})));
+        }
+        const { data: kData, error: kErr } = await supabase.from('culinary_spots').select('*');
+        if (!kErr && kData && kData.length > 0) {
+          setKulinerList(kData.map(item => ({...item, halteTerdekat: item.halte_terdekat})));
+        }
+        const { data: cData, error: cErr } = await supabase.from('corridors').select('*');
+        if (!cErr && cData && cData.length > 0) {
+          const mappedCorridors = cData.map(c => ({
+            id: c.id,
+            name: c.name,
+            route: c.route,
+            color: c.color,
+            operatingHours: c.operating_hours,
+            totalStopPoints: c.total_stop_points,
+            path: c.path,
+            stops: c.stops
+          }));
+          setCorridorsList(mappedCorridors);
+          setVisibility(prev => {
+            const newVis = { ...prev };
+            mappedCorridors.forEach(c => {
+              if (newVis[c.id] === undefined) newVis[c.id] = true;
+            });
+            return newVis;
+          });
+        }
+      } catch (err) {
+        console.error("Supabase fetch error", err);
+      }
+    };
+    fetchData();
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("mjt_saved_stops", JSON.stringify(savedStops));
   }, [savedStops]);
@@ -190,7 +236,13 @@ function App() {
   };
 
   const [userPos, setUserPos] = useState(null);
-  const [visibility, setVisibility] = useState(corridors.reduce((acc, c) => ({ ...acc, [c.id]: true }), {}));
+  const [visibility, setVisibility] = useState({
+    ...initialCorridors.reduce((acc, c) => ({ ...acc, [c.id]: true }), {}),
+    tourism: true,
+    culinary: true,
+    liveTracking: true,
+    userLocation: true
+  });
   const [selectedStop, setSelectedStop] = useState(null);
   const [searchedRoute, setSearchedRoute] = useState(null);
   const mapRef = useRef();
@@ -265,7 +317,7 @@ function App() {
     let nearestStop = null;
     let minDistance = Infinity;
 
-    corridors.forEach(corridor => {
+    corridorsList.forEach(corridor => {
       corridor.stops.forEach(stop => {
         const dist = getDistance(userPos[0], userPos[1], stop.lat, stop.lng);
         if (dist < minDistance) {
@@ -306,7 +358,7 @@ function App() {
       onRouteSelect={(searchData) => {
         if (searchData.origin === "GPS") {
           setCurrentView('map'); 
-          const targetStop = corridors.flatMap(c => c.stops).find(s => {
+          const targetStop = corridorsList.flatMap(c => c.stops).find(s => {
             const searchName = (searchData.destination || "").toLowerCase().replace('halte ', '').trim();
             const stopName = (s.name || "").toLowerCase().replace('halte ', '').trim();
             const stopFullName = (s.fullName || "").toLowerCase().replace('halte ', '').trim();
@@ -340,7 +392,7 @@ function App() {
           setCurrentView('map'); // Pindah ke peta dulu
 
           // Cari data detail halte tujuannya dari array corridors
-          const targetStop = corridors.flatMap(c => c.stops).find(s => {
+          const targetStop = corridorsList.flatMap(c => c.stops).find(s => {
             // Ubah semua jadi huruf kecil dan hapus kata "halte " di depannya
             const searchName = (searchData.destination || "").toLowerCase().replace('halte ', '').trim();
             const stopName = (s.name || "").toLowerCase().replace('halte ', '').trim();
@@ -426,48 +478,49 @@ function App() {
           />
           
           {/* 👇 TAMBAHIN KODINGAN INI BUAT NAMPILIN TITIK WISATA 👇 */}
-          {tourismData.map((wisata) => (
+          {visibility['tourism'] !== false && tourismList.map((wisata) => (
             <Marker key={wisata.id} position={[wisata.lat, wisata.lng]} icon={tourismIcon}>
-              <Popup className="gm-popup">
-                 <div className="gm-popup-content" style={{ padding: '5px' }}>
-                    <div className="gm-title" style={{ fontSize: '14px', marginBottom: '5px', color: '#9B59B6' }}>
-                       {wisata.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>
-                       {wisata.deskripsi}
-                    </div>
-                    <div style={{ fontSize: '11px', background: '#f1f5f9', padding: '4px', borderRadius: '4px' }}>
-                       📍 Halte Terdekat: <strong>{wisata.halteTerdekat}</strong>
-                    </div>
-                 </div>
-              </Popup>
+               <div style={{ display: 'none' }}></div> {/* Keep Leaflet happy if needed, but standard popup works */}
+               <Popup className="gm-popup">
+                  <div className="gm-popup-content" style={{ padding: '5px' }}>
+                     <div className="gm-title" style={{ fontSize: '14px', marginBottom: '5px', color: '#9B59B6' }}>
+                        {wisata.nama}
+                     </div>
+                     <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>
+                        {wisata.deskripsi}
+                     </div>
+                     <div style={{ fontSize: '11px', background: '#f1f5f9', padding: '4px', borderRadius: '4px' }}>
+                        📍 Halte Terdekat: <strong>{wisata.halteTerdekat}</strong>
+                     </div>
+                  </div>
+               </Popup>
             </Marker>
           ))}
 
 
           {/* 👇 Menampilkan Titik Kuliner di Peta 👇 */}
-          {kulinerData.map((kuliner) => (
+          {visibility['culinary'] !== false && kulinerList.map((kuliner) => (
             <Marker key={kuliner.id} position={[kuliner.lat, kuliner.lng]} icon={culinaryIcon}>
-              <Popup className="gm-popup">
-                 <div className="gm-popup-content" style={{ padding: '5px' }}>
-                    <div className="gm-title" style={{ fontSize: '14px', marginBottom: '5px', color: '#F39C12' }}>
-                       {kuliner.nama}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>
-                       {kuliner.deskripsi}
-                    </div>
-                    <div style={{ fontSize: '11px', background: '#f1f5f9', padding: '4px', borderRadius: '4px' }}>
-                       📍 Halte Terdekat: <strong>{kuliner.halteTerdekat}</strong>
-                    </div>
-                 </div>
-              </Popup>
+               <Popup className="gm-popup">
+                  <div className="gm-popup-content" style={{ padding: '5px' }}>
+                     <div className="gm-title" style={{ fontSize: '14px', marginBottom: '5px', color: '#F39C12' }}>
+                        {kuliner.nama}
+                     </div>
+                     <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '10px' }}>
+                        {kuliner.deskripsi}
+                     </div>
+                     <div style={{ fontSize: '11px', background: '#f1f5f9', padding: '4px', borderRadius: '4px' }}>
+                        📍 Halte Terdekat: <strong>{kuliner.halteTerdekat}</strong>
+                     </div>
+                  </div>
+               </Popup>
             </Marker>
           ))}
           
           <ZoomControl position="bottomleft" />
-          <UserLocationMarker position={userPos} />
+          {visibility['userLocation'] !== false && <UserLocationMarker position={userPos} />}
           <FlyToStop stop={selectedStop} />
-          {corridors.map((c) => (
+          {corridorsList.map((c) => (
             <CorridorLayer 
               key={c.id} 
               corridor={c} 
@@ -477,7 +530,7 @@ function App() {
               savedStops={savedStops}
             />
           ))}
-          {corridors.map((c) => visibility[c.id] && c.path && (
+          {visibility['liveTracking'] !== false && corridorsList.map((c) => visibility[c.id] && c.path && (
             <MovingBus 
               key={`bus-${c.id}`} 
               path={c.path} 
@@ -611,11 +664,11 @@ function App() {
 
         {!isCleanView && (
           <>
-            <SearchBar corridors={corridors} onSelectStop={handleSelectStop} lang={lang} />
+            <SearchBar corridors={corridorsList} onSelectStop={handleSelectStop} lang={lang} />
             
             {/* 👇 DATA INITIAL SEARCH DIKIRIM KE SINI 👇 */}
             <RouteSearch 
-              corridors={corridors} 
+              corridors={corridorsList} 
               onRouteFound={handleRouteFound} 
               onRouteClear={handleRouteClear}
               triggerRoute={triggerRoute}
@@ -624,7 +677,7 @@ function App() {
               lang={lang}
             />
             
-            <Legend corridors={corridors} visibility={visibility} onToggle={toggleCorridor} stats={stats} lang={lang} />
+            <Legend corridors={corridorsList} visibility={visibility} onToggle={toggleCorridor} stats={stats} lang={lang} />
           </>
         )}
       </div>

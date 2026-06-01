@@ -3,6 +3,7 @@ import Lenis from 'lenis';
 import './TourismPage.css';
 import { translations } from '../utils/translations';
 import { kulinerData } from '../data/kulinerData';
+import { supabase } from '../utils/supabaseClient';
 
 const CulinaryPage = ({ onBack, lang, onRouteSelect }) => {
   const t = translations[lang] || translations['id'];
@@ -12,6 +13,21 @@ const CulinaryPage = ({ onBack, lang, onRouteSelect }) => {
   // 👇 STATE BARU BUAT DETEKSI ARAH ANIMASI 👇
   const [placeAnimDir, setPlaceAnimDir] = useState('up'); // 'up', 'next', atau 'prev'
   const [imgAnimDir, setImgAnimDir] = useState('next'); 
+  const [kulinerList, setKulinerList] = useState(kulinerData);
+
+  useEffect(() => {
+    const fetchKuliner = async () => {
+      try {
+        const { data, error } = await supabase.from('culinary_spots').select('*');
+        if (!error && data && data.length > 0) {
+          setKulinerList(data.map(item => ({...item, halteTerdekat: item.halte_terdekat})));
+        }
+      } catch (err) {
+        console.error("Supabase fetch error", err);
+      }
+    };
+    fetchKuliner();
+  }, []);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -52,9 +68,9 @@ const CulinaryPage = ({ onBack, lang, onRouteSelect }) => {
     e.stopPropagation(); 
     setPlaceAnimDir('next'); // Set animasi kotak ke kiri
     setImgAnimDir('next'); // Reset arah gambar juga
-    const currentIndex = kulinerData.findIndex(k => k.id === selectedItem.id);
-    const nextIndex = currentIndex === kulinerData.length - 1 ? 0 : currentIndex + 1;
-    const nextData = kulinerData[nextIndex];
+    const currentIndex = kulinerList.findIndex(k => k.id === selectedItem.id);
+    const nextIndex = currentIndex === kulinerList.length - 1 ? 0 : currentIndex + 1;
+    const nextData = kulinerList[nextIndex];
     const images = nextData.gambar ? (Array.isArray(nextData.gambar) ? nextData.gambar : [nextData.gambar]) : ["https://via.placeholder.com/600x400?text=No+Image"];
     setSelectedItem({ ...nextData, gambarList: images });
     setCurrentImageIndex(0); 
@@ -64,9 +80,9 @@ const CulinaryPage = ({ onBack, lang, onRouteSelect }) => {
     e.stopPropagation();
     setPlaceAnimDir('prev'); // Set animasi kotak ke kanan
     setImgAnimDir('prev');
-    const currentIndex = kulinerData.findIndex(k => k.id === selectedItem.id);
-    const prevIndex = currentIndex === 0 ? kulinerData.length - 1 : currentIndex - 1;
-    const prevData = kulinerData[prevIndex];
+    const currentIndex = kulinerList.findIndex(k => k.id === selectedItem.id);
+    const prevIndex = currentIndex === 0 ? kulinerList.length - 1 : currentIndex - 1;
+    const prevData = kulinerList[prevIndex];
     const images = prevData.gambar ? (Array.isArray(prevData.gambar) ? prevData.gambar : [prevData.gambar]) : ["https://via.placeholder.com/600x400?text=No+Image"];
     setSelectedItem({ ...prevData, gambarList: images });
     setCurrentImageIndex(0);
@@ -110,7 +126,7 @@ const CulinaryPage = ({ onBack, lang, onRouteSelect }) => {
         </div>
 
         <div className="tourism-grid">
-          {kulinerData.map((item) => {
+          {kulinerList.map((item) => {
             const images = item.gambar ? (Array.isArray(item.gambar) ? item.gambar : [item.gambar]) : ["https://via.placeholder.com/600x400?text=No+Image"];
 
             return (

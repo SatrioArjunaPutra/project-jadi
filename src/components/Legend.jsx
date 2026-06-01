@@ -54,6 +54,61 @@ function Legend({ corridors, visibility, onToggle, stats, lang = 'id' }) {
                         </label>
                     ))}
 
+                    {/* Additional Categories */}
+                    <div className="legend-poi" style={{ borderTop: '1px solid var(--glass-border)', marginTop: '8px', paddingTop: '8px' }}>
+                        <h4 style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-dim)', padding: '4px 16px', textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0 }}>
+                            {lang === 'id' ? 'Kategori Tambahan' : 'Additional Categories'}
+                        </h4>
+                        <label className={`legend-item ${visibility['tourism'] !== false ? "active" : "inactive"}`}>
+                            <input
+                                type="checkbox"
+                                checked={visibility['tourism'] !== false}
+                                onChange={() => onToggle('tourism')}
+                            />
+                            <span className="legend-color" style={{ background: '#9B59B6' }} />
+                            <div className="legend-info">
+                                <span className="legend-name">{lang === 'id' ? '📸 Wisata' : '📸 Tourism'}</span>
+                                <span className="legend-route">{lang === 'id' ? 'Destinasi Pariwisata' : 'Tourist Destinations'}</span>
+                            </div>
+                        </label>
+                        <label className={`legend-item ${visibility['culinary'] !== false ? "active" : "inactive"}`}>
+                            <input
+                                type="checkbox"
+                                checked={visibility['culinary'] !== false}
+                                onChange={() => onToggle('culinary')}
+                            />
+                            <span className="legend-color" style={{ background: '#F39C12' }} />
+                            <div className="legend-info">
+                                <span className="legend-name">{lang === 'id' ? '🍜 Kuliner' : '🍜 Culinary'}</span>
+                                <span className="legend-route">{lang === 'id' ? 'Pusat Makanan Legendaris' : 'Legendary Food Centers'}</span>
+                            </div>
+                        </label>
+                        <label className={`legend-item ${visibility['liveTracking'] !== false ? "active" : "inactive"}`}>
+                            <input
+                                type="checkbox"
+                                checked={visibility['liveTracking'] !== false}
+                                onChange={() => onToggle('liveTracking')}
+                            />
+                            <span className="legend-color" style={{ background: '#00A7D0' }} />
+                            <div className="legend-info">
+                                <span className="legend-name">{lang === 'id' ? '🚌 Live Tracking' : '🚌 Live Tracking'}</span>
+                                <span className="legend-route">{lang === 'id' ? 'Posisi Bus Real-time' : 'Real-time Bus Positions'}</span>
+                            </div>
+                        </label>
+                        <label className={`legend-item ${visibility['userLocation'] !== false ? "active" : "inactive"}`}>
+                            <input
+                                type="checkbox"
+                                checked={visibility['userLocation'] !== false}
+                                onChange={() => onToggle('userLocation')}
+                            />
+                            <span className="legend-color" style={{ background: '#4285F4' }} />
+                            <div className="legend-info">
+                                <span className="legend-name">{lang === 'id' ? '📍 Posisi Anda' : '📍 Your Location'}</span>
+                                <span className="legend-route">{lang === 'id' ? 'Lokasi GPS Pengguna' : 'User GPS Location'}</span>
+                            </div>
+                        </label>
+                    </div>
+
                     {/* Symbols */}
                     <div className="legend-symbols">
                         <h4>{lang === 'id' ? 'Simbol' : 'Symbols'}</h4>
