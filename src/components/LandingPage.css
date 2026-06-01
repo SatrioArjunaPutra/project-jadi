@@ -1081,3 +1081,298 @@
   margin-top: 10px !important; 
 }
 
+/* ===== RESPONSIVE MEDIA QUERIES ===== */
+
+@media (max-width: 1024px) {
+  .landing-nav {
+    padding: 1rem 2rem;
+  }
+  .landing-nav.scrolled {
+    padding: 0.8rem 2rem;
+  }
+  .hero-title {
+    font-size: 3.2rem;
+  }
+  .map-showcase {
+    width: 400px;
+    height: 400px;
+  }
+}
+
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: 0.8rem 1rem;
+  }
+  .landing-nav.scrolled {
+    padding: 0.6rem 1rem;
+  }
+  
+  .nav-brand {
+    gap: 8px;
+  }
+  
+  .brand-logo-img {
+    height: 36px;
+  }
+  
+  .brand-title {
+    font-size: 1rem !important;
+  }
+  
+  .brand-subtitle {
+    font-size: 0.7rem;
+  }
+
+  /* Sembunyikan link navigasi di mobile agar tidak bertumpuk */
+  .nav-links {
+    display: none;
+  }
+
+  .nav-actions {
+    gap: 0.5rem;
+  }
+
+  .dashboard-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .dashboard-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .login-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+  
+  .user-profile {
+    padding: 2px 6px;
+  }
+  
+  .user-profile .avatar {
+    width: 28px;
+    height: 28px;
+    font-size: 0.8rem;
+  }
+  
+  .user-info {
+    display: none; /* Hanya tampilkan avatar */
+  }
+
+  /* Hero Section */
+  .landing-hero {
+    flex-direction: column;
+    padding: 100px 1.2rem 2rem;
+    text-align: center;
+    min-height: auto;
+  }
+
+  .hero-content {
+    align-items: center;
+    text-align: center;
+    padding-top: 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .hero-badge {
+    margin-bottom: 1.2rem;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+  }
+
+  .hero-title {
+    font-size: 2.5rem;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+    margin-bottom: 1.8rem;
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .hero-actions {
+    justify-content: center;
+    width: 100%;
+    gap: 0.8rem;
+  }
+  
+  .btn-primary, .btn-secondary {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.95rem;
+    flex: 1;
+    justify-content: center;
+    max-width: 200px;
+    border-radius: 8px;
+  }
+
+  .stats-container {
+    justify-content: center;
+    gap: 1.5rem;
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .stat-item h3 {
+    font-size: 1.6rem;
+  }
+  
+  .stat-item p {
+    font-size: 0.8rem;
+  }
+
+  /* Peta Ilustrasi */
+  .hero-visual {
+    margin-top: 2rem;
+    width: 100%;
+  }
+  
+  .map-showcase {
+    width: 320px;
+    height: 320px;
+  }
+  
+  .floating-card {
+    font-size: 0.75rem;
+    padding: 8px 12px;
+  }
+  
+  .card-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  /* Info Section */
+  .landing-info-section {
+    padding: 3rem 1.2rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.8rem;
+  }
+
+  /* Grid Kartu Layanan */
+  .vehicle-card {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .card-image {
+    flex: none;
+    width: 100%;
+    height: 200px;
+  }
+
+  .card-content {
+    padding: 1.5rem;
+  }
+
+  .card-content h3 {
+    font-size: 1.3rem;
+  }
+
+  /* User Guide Banner */
+  .user-guide-banner {
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .banner-visual {
+    flex: none;
+    width: 100%;
+    height: 180px;
+  }
+
+  .banner-text h2 {
+    font-size: 1.6rem;
+  }
+
+  .banner-text p {
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .banner-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-nav {
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .brand-title {
+    font-size: 0.9rem !important;
+  }
+  
+  .brand-subtitle {
+    display: none;
+  }
+
+  .dashboard-btn span {
+    display: none; /* Sembunyikan teks tombol di layar ekstra kecil, tampilkan icon saja */
+  }
+  
+  .dashboard-btn {
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+  }
+  
+  .dashboard-btn svg {
+    margin: 0;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .stats-container {
+    gap: 1rem;
+  }
+  
+  .stat-item {
+    flex: 1 1 40%;
+    text-align: center;
+  }
+  
+  .support-card {
+    padding: 16px;
+    gap: 12px;
+  }
+  
+  .support-text h4 {
+    font-size: 1rem;
+  }
+  
+  .support-text p {
+    font-size: 0.8rem;
+  }
+}
+
+
